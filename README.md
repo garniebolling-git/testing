@@ -1,5 +1,3 @@
-# testing repo
-
 Web Pages for Demonstration
 
 https://garniebolling-git.github.io/testing/t1-report.html
