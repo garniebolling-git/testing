@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 1: Legacy Migration — ExBank CDO Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f1117; color: #e1e4e8; line-height: 1.7; }
+
+        .header {
+            background: linear-gradient(135deg, #e94560 0%, #c81e45 50%, #a01535 100%);
+            padding: 60px 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.4em; color: #fff; margin-bottom: 10px; }
+        .header .subtitle { font-size: 1.2em; color: rgba(255,255,255,0.9); font-weight: 300; }
+        .header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 15px;
+            color: #fff;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 30px; }
+
+        .scenario-bar {
+            background: linear-gradient(135deg, #1a2332, #1e293b);
+            border-left: 4px solid #e94560;
+            padding: 25px 30px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 50px;
+            font-size: 1.1em;
+            font-style: italic;
+            color: #94a3b8;
+        }
+        .scenario-bar strong { color: #e94560; font-style: normal; }
+
+        .section { margin-bottom: 55px; }
+        .section-label {
+            display: inline-block;
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 5px 14px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .label-what { background: #e94560; color: #fff; }
+        .label-why { background: #f59e0b; color: #1a1a2e; }
+        .label-how { background: #0ea5e9; color: #fff; }
+
+        .section h2 { font-size: 1.8em; margin-bottom: 20px; color: #f0f4f8; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 25px;
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: #e94560; }
+        .card .icon { font-size: 2em; margin-bottom: 12px; }
+        .card h3 { font-size: 1.1em; color: #f0f4f8; margin-bottom: 8px; }
+        .card p { color: #8b949e; font-size: 0.95em; }
+
+        .challenge-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .challenge-table th {
+            background: #e94560;
+            color: #fff;
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .challenge-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #21262d;
+            color: #c9d1d9;
+        }
+        .challenge-table tr:hover td { background: #161b22; }
+        .challenge-table .arrow { color: #e94560; font-weight: bold; }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+        .flow-number {
+            min-width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #e94560, #c81e45);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .flow-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 18px 22px;
+            flex: 1;
+        }
+        .flow-content h4 { color: #e94560; margin-bottom: 5px; }
+        .flow-content p { color: #8b949e; font-size: 0.92em; margin: 0; }
+        .flow-content .component-tag {
+            display: inline-block;
+            background: #3a1e2f;
+            color: #e94560;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+        .flow-connector {
+            width: 2px;
+            height: 20px;
+            background: #30363d;
+            margin-left: 21px;
+        }
+
+        .script-block {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        .script-block .time {
+            display: inline-block;
+            background: #0ea5e9;
+            color: #fff;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .script-block h4 { color: #f0f4f8; margin-bottom: 10px; }
+        .script-block blockquote {
+            border-left: 3px solid #e94560;
+            padding: 10px 18px;
+            margin: 12px 0;
+            color: #94a3b8;
+            font-style: italic;
+            background: #0d1117;
+            border-radius: 0 8px 8px 0;
+        }
+        .script-block .action {
+            color: #0ea5e9;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+        .script-block .action::before { content: "▶ "; }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-family: 'Courier New', monospace;
+            color: #e94560;
+            font-size: 0.9em;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        /* Copy Pill */
+        .copy-wrapper { position: relative; }
+        .copy-pill {
+            display: inline-block;
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+        }
+        .copy-pill:hover { background: #c81e45; transform: scale(1.05); }
+        .copy-pill:active { transform: scale(0.97); }
+        .copy-pill.copied { background: #f59e0b; }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .results-table th {
+            background: #1e293b;
+            color: #e94560;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e94560;
+        }
+        .results-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #21262d;
+            color: #c9d1d9;
+        }
+        .results-table tr:hover td { background: #161b22; }
+        .highlight { color: #f59e0b; font-weight: 700; }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .asset-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .asset-card .file-path {
+            font-family: 'Courier New', monospace;
+            color: #e94560;
+            font-size: 0.85em;
+            margin-bottom: 6px;
+        }
+        .asset-card .file-type {
+            display: inline-block;
+            background: #3a1e2f;
+            color: #e94560;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .asset-card p { color: #8b949e; font-size: 0.88em; }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+        .benefit-icon {
+            min-width: 36px;
+            height: 36px;
+            background: #3a1e2f;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .benefit-text h4 { color: #f0f4f8; font-size: 1em; margin-bottom: 4px; }
+        .benefit-text p { color: #8b949e; font-size: 0.92em; }
+
+        .transition {
+            background: linear-gradient(135deg, #1a2332, #1e293b);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .transition .arrow-down { font-size: 2em; color: #10b981; margin-bottom: 10px; }
+        .transition p { color: #94a3b8; font-size: 1.05em; font-style: italic; }
+        .transition strong { color: #f0f4f8; }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: #484f58;
+            font-size: 0.85em;
+            border-top: 1px solid #21262d;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>Topic 1: Legacy Migration</h1>
+    <div class="subtitle">From DataStage to Maia — Convert, Build, Run</div>
+    <div class="badge">ExBank CDO Presentation &bull; 45-Minute Demo &bull; Segment 1 of 3</div>
+</div>
+
+<div class="container">
+
+    <!-- SCENARIO -->
+    <div class="scenario-bar">
+        ExBank has <strong>200+ legacy DataStage and SSIS jobs</strong> feeding regulatory reports. The original authors have left. The central team maintains jobs they don't understand. Matillion's Workload Conversion Tool converts them to <strong>visual, governed pipelines in minutes</strong>.
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- WHAT -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-what">WHAT</span>
+        <h2>What Are We Demonstrating?</h2>
+        <p style="color:#8b949e; margin-bottom: 20px;">
+            A live, end-to-end conversion of a legacy DataStage job into a Maia pipeline — uploaded, converted, reviewed on canvas, and executed against live Snowflake data in minutes.
+        </p>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="icon">📂</div>
+                <h3>Upload Legacy File</h3>
+                <p>A 300+ line DataStage .dsx export file — the kind of opaque XML configuration ExBank's central team maintains today.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🤖</div>
+                <h3>Maia Converts Automatically</h3>
+                <p>The Workload Conversion Tool analyzes job structure — sources, joins, filters, aggregations — and produces visual pipeline components.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🖥️</div>
+                <h3>Visual on the Canvas</h3>
+                <p>7 readable components replace 300 lines of XML. Every step clickable, inspectable, and maintainable by anyone on the team.</p>
+            </div>
+            <div class="card">
+                <div class="icon">▶️</div>
+                <h3>Runs Against Live Data</h3>
+                <p>Execute the converted pipeline against 3,744 banking operations records in Snowflake. Results in ~4 seconds.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pipeline Flow -->
+    <div class="section">
+        <span class="section-label label-what">WHAT</span>
+        <h2>The Converted Pipeline</h2>
+
+        <div class="flow-container">
+            <div class="flow-step">
+                <div class="flow-number">1</div>
+                <div class="flow-content">
+                    <h4>Load Source Data</h4>
+                    <p>Three banking tables: EXBANK_OPERATIONS (3,744 rows), EXBANK_BUSINESS_UNITS (12 divisions), EXBANK_CASE_TYPES (12 case categories)</p>
+                    <span class="component-tag">Table Input × 3</span>
+                </div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+                <div class="flow-number">2</div>
+                <div class="flow-content">
+                    <h4>Join Units and Cases</h4>
+                    <p>Inner join operations with business units (on UNIT_ID) and case types (on CASE_TYPE_ID) — enriching each record with division, region, severity, and SLA data</p>
+                    <span class="component-tag">Join</span>
+                </div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+                <div class="flow-number">3</div>
+                <div class="flow-content">
+                    <h4>Filter High Severity</h4>
+                    <p>Keep only Critical and High severity cases — the ones regulators monitor and require daily reporting on</p>
+                    <span class="component-tag">Filter</span>
+                </div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+                <div class="flow-number">4</div>
+                <div class="flow-content">
+                    <h4>Aggregate by Division</h4>
+                    <p>Group by Division and Region. Sum cases resolved and escalations, average resolution time, count total records.</p>
+                    <span class="component-tag">Aggregate</span>
+                </div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+                <div class="flow-number">5</div>
+                <div class="flow-content">
+                    <h4>Rename to Business-Friendly Names</h4>
+                    <p>TOTAL_CASES_RESOLVED, AVG_RESOLUTION_TIME_HRS, TOTAL_ESCALATIONS, TOTAL_RECORDS</p>
+                    <span class="component-tag">Rename</span>
+                </div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+                <div class="flow-number">6</div>
+                <div class="flow-content">
+                    <h4>Write to Target Table</h4>
+                    <p>Results land in EXBANK_DAILY_SUMMARY — 10 rows of aggregated department metrics ready for regulatory dashboards</p>
+                    <span class="component-tag">Rewrite Table</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- WHY -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-why">WHY</span>
+        <h2>Why Does This Matter to ExBank?</h2>
+
+        <table class="challenge-table">
+            <thead>
+                <tr>
+                    <th>ExBank Challenge</th>
+                    <th></th>
+                    <th>Topic 1 Answer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Legacy ETL bottleneck — DataStage/SSIS on aging servers</td>
+                    <td class="arrow">→</td>
+                    <td>Workload Conversion Tool converts jobs automatically</td>
+                </tr>
+                <tr>
+                    <td>Scarce data engineering resources — drowning in backlog</td>
+                    <td class="arrow">→</td>
+                    <td>Minutes to convert vs. weeks to rewrite</td>
+                </tr>
+                <tr>
+                    <td>Key-person risk — original authors have left</td>
+                    <td class="arrow">→</td>
+                    <td>Visual pipelines anyone can read and maintain</td>
+                </tr>
+                <tr>
+                    <td>Regulatory disruption risk — can't break daily feeds</td>
+                    <td class="arrow">→</td>
+                    <td>Coexistence — run old and new side-by-side</td>
+                </tr>
+                <tr>
+                    <td>CDO's AI skepticism — tired of slide deck demos</td>
+                    <td class="arrow">→</td>
+                    <td>Live demo, real data, real execution — not a slide</td>
+                </tr>
+                <tr>
+                    <td>Time-to-insight mandate — need speed and scale</td>
+                    <td class="arrow">→</td>
+                    <td>~4 second execution on Snowflake elastic compute</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 35px;">
+            <div class="benefit-item">
+                <div class="benefit-icon">⚡</div>
+                <div class="benefit-text">
+                    <h4>Eliminate the Migration Bottleneck</h4>
+                    <p>200+ legacy jobs become a manageable, incremental migration project. Convert the highest-risk regulatory feeds first.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">👤</div>
+                <div class="benefit-text">
+                    <h4>Reduce Key-Person Risk</h4>
+                    <p>Converted pipelines are visual and self-documenting. New team members understand them in minutes, not weeks.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">📋</div>
+                <div class="benefit-text">
+                    <h4>BCBS 239 Compliance via Git</h4>
+                    <p>Every change tracked, every version recoverable, every modification auditable. The regulator asks "who changed this?" — Git has the answer.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🔀</div>
+                <div class="benefit-text">
+                    <h4>Safe Coexistence During Transition</h4>
+                    <p>Legacy jobs continue running while converted pipelines run in parallel. Validate outputs match, then decommission. Zero disruption.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🌐</div>
+                <div class="benefit-text">
+                    <h4>15+ Platforms Supported</h4>
+                    <p>DataStage, SSIS, Informatica, Alteryx, Azure Data Factory, AWS Glue, dbt, and more. One migration capability for the entire legacy footprint.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- HOW -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-how">HOW</span>
+        <h2>How to Demo This (~10 min)</h2>
+
+        <div class="script-block">
+            <span class="time">0:00 – 2:00</span>
+            <h4>Step 1: Set the Scene</h4>
+            <div class="copy-wrapper">
+                <blockquote>"ExBank has over 200 legacy DataStage and SSIS jobs feeding your regulatory reports. Your central team maintains them, but the original authors have moved on. The jobs are black boxes — they work, but nobody wants to touch them. Let me show you how we solve this."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'ExBank has over 200 legacy DataStage and SSIS jobs feeding your regulatory reports. Your central team maintains them, but the original authors have moved on. The jobs are black boxes — they work, but nobody wants to touch them. Let me show you how we solve this.')">📋 Copy</button>
+            </div>
+            <p class="action">Open the .dsx file briefly to show the raw DataStage export — 300+ lines</p>
+            <div class="copy-wrapper">
+                <div class="code-block">Demonstration/t1-EXBANK_Daily_Case_Metrics.dsx</div>
+                <button class="copy-pill" onclick="copyText(this, 'Demonstration/t1-EXBANK_Daily_Case_Metrics.dsx')">📋 Copy Path</button>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <span class="time">2:00 – 5:00</span>
+            <h4>Step 2: Upload into the Conversion Tool</h4>
+            <div class="copy-wrapper">
+                <blockquote>"Matillion's Workload Conversion Tool supports DataStage and SSIS natively — along with 13 other legacy platforms. You upload the export file, and Maia analyzes the entire job structure."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Matillion\'s Workload Conversion Tool supports DataStage and SSIS natively — along with 13 other legacy platforms. You upload the export file, and Maia analyzes the entire job structure.')">📋 Copy</button>
+            </div>
+            <p class="action">Navigate to Workload Conversion UI → Upload the .dsx file</p>
+            <p class="action">Show the two modes: "Plan with Maia" vs. "Begin conversion"</p>
+            <div class="copy-wrapper">
+                <blockquote>"The tool reads only job structure — sources, transformations, targets. It never touches your actual data, and credentials are mapped to secure secret references."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'The tool reads only job structure — sources, transformations, targets. It never touches your actual data, and credentials are mapped to secure secret references.')">📋 Copy</button>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <span class="time">5:00 – 8:00</span>
+            <h4>Step 3: Review the Converted Pipeline</h4>
+            <div class="copy-wrapper">
+                <blockquote>"Here's what the converted job looks like. Seven visual components, every step readable on the canvas."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Here\'s what the converted job looks like. Seven visual components, every step readable on the canvas.')">📋 Copy</button>
+            </div>
+            <p class="action">Open t1-exbank-daily-metrics.tran.yaml</p>
+            <div class="copy-wrapper">
+                <div class="code-block">Demonstration/t1-exbank-daily-metrics.tran.yaml</div>
+                <button class="copy-pill" onclick="copyText(this, 'Demonstration/t1-exbank-daily-metrics.tran.yaml')">📋 Copy Path</button>
+            </div>
+            <p class="action">Walk through each component: 3 Table Inputs → Join → Filter → Aggregate → Rename → Write</p>
+            <div class="copy-wrapper">
+                <blockquote>"Compare this to the 300-line DSX file. Same logic. But now anyone on your team can read it, understand it, and maintain it."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Compare this to the 300-line DSX file. Same logic. But now anyone on your team can read it, understand it, and maintain it.')">📋 Copy</button>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <span class="time">8:00 – 10:00</span>
+            <h4>Step 4: Run It Live</h4>
+            <div class="copy-wrapper">
+                <blockquote>"Let's run it. Right now. Against your Snowflake data."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Let\'s run it. Right now. Against your Snowflake data.')">📋 Copy</button>
+            </div>
+            <p class="action">Open the orchestration and click Run</p>
+            <div class="copy-wrapper">
+                <div class="code-block">Demonstration/t1-exbank-daily-etl.orch.yaml</div>
+                <button class="copy-pill" onclick="copyText(this, 'Demonstration/t1-exbank-daily-etl.orch.yaml')">📋 Copy Path</button>
+            </div>
+            <p class="action">Show execution completing — all 3 steps in ~4 seconds</p>
+            <div class="copy-wrapper">
+                <blockquote>"Risk Management in the Northeast is handling the highest volume — 38,000+ critical and high-severity cases. That's the kind of insight your compliance team needs every morning."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Risk Management in the Northeast is handling the highest volume — 38,000+ critical and high-severity cases. That\'s the kind of insight your compliance team needs every morning.')">📋 Copy</button>
+            </div>
+            <div class="copy-wrapper">
+                <div class="code-block">SELECT * FROM EXBANK_DAILY_SUMMARY ORDER BY TOTAL_CASES_RESOLVED DESC;</div>
+                <button class="copy-pill" onclick="copyText(this, 'SELECT * FROM EXBANK_DAILY_SUMMARY ORDER BY TOTAL_CASES_RESOLVED DESC;')">📋 Copy SQL</button>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 30px; color: #f0f4f8;">Sample Output: EXBANK_DAILY_SUMMARY</h3>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>DIVISION</th>
+                    <th>REGION</th>
+                    <th>TOTAL_CASES_RESOLVED</th>
+                    <th>AVG_RESOLUTION_TIME_HRS</th>
+                    <th>TOTAL_ESCALATIONS</th>
+                    <th>TOTAL_RECORDS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Risk Management</td>
+                    <td>Northeast</td>
+                    <td class="highlight">38,845</td>
+                    <td>4.92</td>
+                    <td>4,785</td>
+                    <td>546</td>
+                </tr>
+                <tr>
+                    <td>Wealth Management</td>
+                    <td>West Coast</td>
+                    <td>13,124</td>
+                    <td>4.77</td>
+                    <td>1,443</td>
+                    <td>182</td>
+                </tr>
+                <tr>
+                    <td>Corporate Banking</td>
+                    <td>Southeast</td>
+                    <td>12,966</td>
+                    <td>4.61</td>
+                    <td>1,399</td>
+                    <td>182</td>
+                </tr>
+                <tr>
+                    <td>Retail Banking</td>
+                    <td>Midwest</td>
+                    <td>12,811</td>
+                    <td>4.79</td>
+                    <td>1,551</td>
+                    <td>182</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ASSETS -->
+    <div class="section">
+        <span class="section-label label-how">HOW</span>
+        <h2>Demo Assets</h2>
+        <div class="asset-grid">
+            <div class="asset-card">
+                <div class="file-type">DATA SETUP</div>
+                <div class="file-path">Demonstration/t1-demo-data-setup.orch.yaml</div>
+                <p>Creates 3 banking tables: business units (12), case types (12), operations (3,744). Run before demo.</p>
+            </div>
+            <div class="asset-card">
+                <div class="file-type">DATASTAGE FILE</div>
+                <div class="file-path">Demonstration/t1-EXBANK_Daily_Case_Metrics.dsx</div>
+                <p>300+ line DataStage .dsx export file. Upload into the Workload Conversion Tool.</p>
+            </div>
+            <div class="asset-card">
+                <div class="file-type">TRANSFORMATION</div>
+                <div class="file-path">Demonstration/t1-exbank-daily-metrics.tran.yaml</div>
+                <p>7 components: 3 Table Inputs → Join → Filter → Aggregate → Rename → Rewrite Table</p>
+            </div>
+            <div class="asset-card">
+                <div class="file-type">ORCHESTRATION</div>
+                <div class="file-path">Demonstration/t1-exbank-daily-etl.orch.yaml</div>
+                <p>Create EXBANK_DAILY_SUMMARY table → Run transformation pipeline</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANSITION -->
+    <div class="transition">
+        <div class="arrow-down">⬇️</div>
+        <p><strong>Transition to Topic 2:</strong> "That's one job — converted, visual, running, and governed. But ExBank's real challenge isn't just migrating the old. It's keeping up with the new. Your functional teams have a backlog of data requests the central team can't get to. <strong>Let me show you how Maia changes that.</strong>"</p>
+    </div>
+
+</div>
+
+<div class="footer">
+    ExBank CDO Demo &bull; Prepared by Garnie Bolling &bull; Matillion &bull; September 2026
+</div>
+
+<script>
+function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(function() {
+        var orig = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = orig;
+            btn.classList.remove('copied');
+        }, 1500);
+    });
+}
+</script>
+</body>
+</html>

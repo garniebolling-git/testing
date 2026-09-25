@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 3: Governance, Privacy &amp; Trust — ExBank CDO Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f1117; color: #e1e4e8; line-height: 1.7; }
+
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%);
+            padding: 60px 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.4em; color: #fff; margin-bottom: 10px; }
+        .header .subtitle { font-size: 1.2em; color: rgba(255,255,255,0.9); font-weight: 300; }
+        .header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 15px;
+            color: #fff;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 30px; }
+
+        .scenario-bar {
+            background: linear-gradient(135deg, #1a2332, #1e293b);
+            border-left: 4px solid #7c3aed;
+            padding: 25px 30px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 50px;
+            font-size: 1.1em;
+            font-style: italic;
+            color: #94a3b8;
+        }
+        .scenario-bar strong { color: #a78bfa; font-style: normal; }
+
+        .section { margin-bottom: 55px; }
+        .section-label {
+            display: inline-block;
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 5px 14px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .label-what { background: #7c3aed; color: #fff; }
+        .label-why { background: #f59e0b; color: #1a1a2e; }
+        .label-how { background: #0ea5e9; color: #fff; }
+
+        .section h2 { font-size: 1.8em; margin-bottom: 20px; color: #f0f4f8; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 25px;
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: #7c3aed; }
+        .card .icon { font-size: 2em; margin-bottom: 12px; }
+        .card h3 { font-size: 1.05em; color: #f0f4f8; margin-bottom: 8px; }
+        .card p { color: #8b949e; font-size: 0.92em; }
+
+        .challenge-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .challenge-table th {
+            background: #7c3aed;
+            color: #fff;
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .challenge-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #21262d;
+            color: #c9d1d9;
+        }
+        .challenge-table tr:hover td { background: #161b22; }
+        .challenge-table .arrow { color: #a78bfa; font-weight: bold; }
+
+        /* Pillar blocks */
+        .pillar {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-left: 4px solid #7c3aed;
+        }
+        .pillar h3 { color: #a78bfa; margin-bottom: 10px; font-size: 1.2em; }
+        .pillar p { color: #8b949e; font-size: 0.95em; margin-bottom: 10px; }
+        .pillar .demo-action {
+            color: #0ea5e9;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .pillar .demo-action::before { content: "▶ "; }
+        .pillar .key-quote {
+            border-left: 3px solid #a78bfa;
+            padding: 10px 18px;
+            margin: 12px 0;
+            color: #94a3b8;
+            font-style: italic;
+            background: #0d1117;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Nav steps */
+        .nav-steps {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin: 12px 0;
+        }
+        .nav-steps ol { padding-left: 20px; color: #c9d1d9; }
+        .nav-steps li { margin-bottom: 6px; font-size: 0.92em; }
+        .nav-steps .highlight-nav { color: #a78bfa; font-weight: 600; }
+
+        /* Privacy table */
+        .privacy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .privacy-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #21262d;
+            color: #c9d1d9;
+            vertical-align: top;
+        }
+        .privacy-table td:first-child {
+            color: #a78bfa;
+            font-weight: 600;
+            white-space: nowrap;
+            width: 200px;
+        }
+
+        /* Script blocks */
+        .script-block {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        .script-block .time {
+            display: inline-block;
+            background: #0ea5e9;
+            color: #fff;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .script-block h4 { color: #f0f4f8; margin-bottom: 10px; }
+        .script-block blockquote {
+            border-left: 3px solid #7c3aed;
+            padding: 10px 18px;
+            margin: 12px 0;
+            color: #94a3b8;
+            font-style: italic;
+            background: #0d1117;
+            border-radius: 0 8px 8px 0;
+        }
+        .script-block .action {
+            color: #0ea5e9;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+        .script-block .action::before { content: "▶ "; }
+
+        .copy-pill {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+        }
+        .copy-pill:hover { background: #6d28d9; transform: scale(1.05); }
+        .copy-pill:active { transform: scale(0.97); }
+        .copy-pill.copied { background: #f59e0b; }
+
+        /* Closing */
+        .closing-box {
+            background: linear-gradient(135deg, #1a1033, #1e1540);
+            border: 2px solid #7c3aed;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .closing-box h2 { color: #a78bfa; margin-bottom: 20px; }
+        .closing-box blockquote {
+            border: none;
+            padding: 0;
+            color: #c9d1d9;
+            font-style: italic;
+            font-size: 1.1em;
+            line-height: 1.9;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        .closing-box .tagline {
+            color: #a78bfa;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: #484f58;
+            font-size: 0.85em;
+            border-top: 1px solid #21262d;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>Topic 3: Governance, Privacy &amp; Trust</h1>
+    <div class="subtitle">Proving It to the Regulator</div>
+    <div class="badge">ExBank CDO Presentation &bull; 45-Minute Demo &bull; Segment 3 of 3</div>
+</div>
+
+<div class="container">
+
+    <!-- SCENARIO -->
+    <div class="scenario-bar">
+        The board asks: <strong>"How do I know this is safe?"</strong> The regulator asks: <strong>"Where does this number come from?"</strong> The CISO asks: <strong>"Does our data train the AI?"</strong> Topic 3 answers all three — with proof, not promises.
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- WHAT -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-what">WHAT</span>
+        <h2>Four Pillars of Governance</h2>
+        <p style="color:#8b949e; margin-bottom: 20px;">
+            A UI walkthrough using the pipelines from Topics 1 &amp; 2 as live examples. No new pipelines needed — governance is already active on everything we've built.
+        </p>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="icon">🧠</div>
+                <h3>Context Engine</h3>
+                <p>Institutional knowledge captured alongside pipelines. When the engineer leaves, the "why" stays.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🔍</div>
+                <h3>Data Lineage</h3>
+                <p>Column-level traceability from source to target. One click for BCBS 239 compliance.</p>
+            </div>
+            <div class="card">
+                <div class="icon">💥</div>
+                <h3>Impact Analysis</h3>
+                <p>See every downstream pipeline affected before changing a source. No blind changes.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🔒</div>
+                <h3>Data Privacy</h3>
+                <p>SOC 2 Type II. No customer data trains AI. Your data stays in your Snowflake.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- WHY -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-why">WHY</span>
+        <h2>Why Does This Matter to ExBank?</h2>
+
+        <table class="challenge-table">
+            <thead>
+                <tr>
+                    <th>ExBank Challenge</th>
+                    <th></th>
+                    <th>Topic 3 Answer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BCBS 239 — prove where every number comes from</td>
+                    <td class="arrow">→</td>
+                    <td>Column-level lineage, source to target, one click</td>
+                </tr>
+                <tr>
+                    <td>Tribal knowledge loss — the DataStage engineer left</td>
+                    <td class="arrow">→</td>
+                    <td>Context Engine captures the "why" in the platform</td>
+                </tr>
+                <tr>
+                    <td>Change risk — 200 jobs, no dependency visibility</td>
+                    <td class="arrow">→</td>
+                    <td>Impact Stream shows every affected pipeline</td>
+                </tr>
+                <tr>
+                    <td>Board asking "Is AI safe for our data?"</td>
+                    <td class="arrow">→</td>
+                    <td>SOC 2 Type II, no data trains AI, encryption everywhere</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- THE FOUR PILLARS — DETAIL -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-what">WHAT</span>
+        <h2>The Four Pillars in Detail</h2>
+
+        <!-- Pillar 1 -->
+        <div class="pillar">
+            <h3>🧠 Pillar 1: Context Engine</h3>
+            <p>Matillion's Context Engine captures institutional knowledge alongside pipelines using knowledge graphs. Pipelines, tables, business definitions, and team context are all connected — so when someone new picks up a pipeline, they understand not just <em>what</em> it does, but <em>why</em>.</p>
+            <div class="key-quote">"If that DataStage engineer had built in Matillion, the knowledge would still be here — in the context graph, not in someone's head."</div>
+            <button class="copy-pill" onclick="copyText(this, 'If that DataStage engineer had built in Matillion, the knowledge would still be here — in the context graph, not in someone\'s head.')">📋 Copy</button>
+            <p class="demo-action">Navigate to Context Engine in the UI</p>
+            <p class="demo-action">Show how pipelines, tables, and business context connect in the knowledge graph</p>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="pillar">
+            <h3>🔍 Pillar 2: Data Lineage</h3>
+            <p>Automatic, column-level lineage generated from pipeline runs. No manual documentation required. Trace any output column back through every transformation to its source table.</p>
+
+            <div class="nav-steps">
+                <strong style="color:#a78bfa;">How to navigate (click by click):</strong>
+                <ol>
+                    <li>Click <span class="highlight-nav">"Activity"</span> in the left navigation sidebar</li>
+                    <li>Click <span class="highlight-nav">"Lineage"</span> under the Activity section</li>
+                    <li>Search for <span class="highlight-nav">EXBANK_ESCALATION_TRENDS</span></li>
+                    <li>Click on it — the lineage graph shows sources → transformation → target</li>
+                    <li>Click a <span class="highlight-nav">dataset box</span> to see column names &amp; data types</li>
+                    <li>Click the <span class="highlight-nav">transformation icon</span> to see pipeline name, who ran it, when</li>
+                </ol>
+            </div>
+
+            <div class="key-quote">"Your auditor asks 'Where does the SLA breach number come from?' One click. Source to target, column by column. That's BCBS 239 compliance."</div>
+            <button class="copy-pill" onclick="copyText(this, 'Your auditor asks — where does the SLA breach number come from? One click. Source to target, column by column. That\'s BCBS 239 compliance.')">📋 Copy</button>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="pillar">
+            <h3>💥 Pillar 3: Impact Analysis</h3>
+            <p>Lineage traces backward: <em>"Where did this come from?"</em> Impact analysis traces forward: <em>"What breaks if I change this?"</em></p>
+            <p>EXBANK_OPERATIONS feeds into both Topic 1 (Daily Summary) and Topic 2 (Escalation Trends). Before a DBA renames a column, Impact Stream shows both pipelines as affected.</p>
+            <div class="key-quote">"You have 200 legacy jobs to modernize. Every time you change a source table, Impact Stream shows you exactly which pipelines depend on it. No blind changes. No Monday morning surprises."</div>
+            <button class="copy-pill" onclick="copyText(this, 'You have 200 legacy jobs to modernize. Every time you change a source table, Impact Stream shows you exactly which pipelines depend on it. No blind changes. No Monday morning surprises.')">📋 Copy</button>
+        </div>
+
+        <!-- Pillar 4 -->
+        <div class="pillar">
+            <h3>🔒 Pillar 4: Data Privacy &amp; Trust</h3>
+            <p>Concrete guarantees for the board and the CISO — not marketing language.</p>
+            <table class="privacy-table">
+                <tr>
+                    <td>No data trains AI</td>
+                    <td>Maia uses pipeline structure and metadata for suggestions. Your customer data — account numbers, balances, PII — never trains the models.</td>
+                </tr>
+                <tr>
+                    <td>SOC 2 Type II</td>
+                    <td>Independently audited security controls. Not self-certified — a third party verified it.</td>
+                </tr>
+                <tr>
+                    <td>Your Snowflake, your data</td>
+                    <td>Matillion orchestrates and transforms. The data stays in YOUR Snowflake, in YOUR cloud account.</td>
+                </tr>
+                <tr>
+                    <td>Encryption</td>
+                    <td>At rest and in transit. Full stop.</td>
+                </tr>
+                <tr>
+                    <td>GDPR</td>
+                    <td>Data residency controls, right to erasure, the full GDPR framework.</td>
+                </tr>
+            </table>
+            <div class="key-quote">"Your customer data never leaves your Snowflake. Our AI sees pipeline structure, not your data. That's not a marketing claim — it's auditable architecture."</div>
+            <button class="copy-pill" onclick="copyText(this, 'Your customer data never leaves your Snowflake. Our AI sees pipeline structure, not your data. That\'s not a marketing claim — it\'s auditable architecture.')">📋 Copy</button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- HOW -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="section">
+        <span class="section-label label-how">HOW</span>
+        <h2>How to Demo This (~10 min)</h2>
+
+        <div class="script-block">
+            <span class="time">0:00 – 1:00</span>
+            <h4>Step 1: Set the Scene</h4>
+            <div>
+                <blockquote>"Your Risk team just built their own report — no ticket, no backlog, no code. But here's the question the board will ask: 'How do I know this is safe? How do I know what data is flowing where? How do I prove it to the regulator?' Let me show you."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Your Risk team just built their own report — no ticket, no backlog, no code. But here\'s the question the board will ask: How do I know this is safe? How do I know what data is flowing where? How do I prove it to the regulator? Let me show you.')">📋 Copy</button>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <span class="time">1:00 – 3:00</span>
+            <h4>Step 2: Context Engine</h4>
+            <div>
+                <blockquote>"That DataStage engineer who left? The logic in their head is gone. In Matillion, context lives WITH the pipeline — in the knowledge graph. When your new hire picks up this pipeline, they see why it was built, what it serves, and what decisions were made."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'That DataStage engineer who left? The logic in their head is gone. In Matillion, context lives WITH the pipeline — in the knowledge graph. When your new hire picks up this pipeline, they see why it was built, what it serves, and what decisions were made.')">📋 Copy</button>
+            </div>
+            <p class="action">Navigate to Context Engine in the UI</p>
+            <p class="action">Show knowledge graph connecting pipelines, tables, and business context</p>
+        </div>
+
+        <div class="script-block">
+            <span class="time">3:00 – 6:00</span>
+            <h4>Step 3: Data Lineage</h4>
+            <div>
+                <blockquote>"Now — traceability. Your auditor asks: 'Where does the SLA breach number come from?' One click."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Now — traceability. Your auditor asks: where does the SLA breach number come from? One click.')">📋 Copy</button>
+            </div>
+            <p class="action">Click Activity → Lineage in the left sidebar</p>
+            <p class="action">Search for EXBANK_ESCALATION_TRENDS</p>
+            <p class="action">Show the lineage graph: 3 source tables → transformation → output</p>
+            <p class="action">Click a dataset box to show column-level detail</p>
+            <p class="action">Click the transformation icon for run metadata</p>
+            <div>
+                <blockquote>"That's BCBS 239 compliance. Source to target, column by column, automatically generated. No manual documentation. No spreadsheets."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'That\'s BCBS 239 compliance. Source to target, column by column, automatically generated. No manual documentation. No spreadsheets.')">📋 Copy</button>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <span class="time">6:00 – 8:00</span>
+            <h4>Step 4: Impact Analysis</h4>
+            <div>
+                <blockquote>"Lineage traces backward — 'where did this come from?' Impact analysis traces FORWARD — 'what breaks if I change this?' Your DBA needs to rename a column in EXBANK_OPERATIONS. Before they touch it, they see both the Daily Summary and Escalation Trends pipelines depend on it. No blind changes."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Lineage traces backward — where did this come from? Impact analysis traces FORWARD — what breaks if I change this? Your DBA needs to rename a column in EXBANK_OPERATIONS. Before they touch it, they see both the Daily Summary and Escalation Trends pipelines depend on it. No blind changes.')">📋 Copy</button>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <span class="time">8:00 – 10:00</span>
+            <h4>Step 5: Data Privacy &amp; Trust</h4>
+            <div>
+                <blockquote>"Last question from the board: 'Is our data safe with AI?' No customer data trains our models. SOC 2 Type II — independently audited. Your data stays in your Snowflake, in your cloud account. Encryption at rest and in transit. That's not a marketing claim — it's auditable architecture."</blockquote>
+                <button class="copy-pill" onclick="copyText(this, 'Last question from the board: Is our data safe with AI? No customer data trains our models. SOC 2 Type II — independently audited. Your data stays in your Snowflake, in your cloud account. Encryption at rest and in transit. That\'s not a marketing claim — it\'s auditable architecture.')">📋 Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="closing-box">
+        <h2>🎯 Close the Full Demo</h2>
+        <blockquote>
+            "Let's bring it all together. In the last 30 minutes, you saw:<br><br>
+            Legacy DataStage jobs — converted, visual, and running in minutes. Not months.<br><br>
+            Your Risk team — building their own reports with AI. No ticket, no backlog, no code.<br><br>
+            And every bit of it — governed. Lineage-tracked. Auditable. Your data stays in your Snowflake, your AI is certified, and your regulator gets the traceability they require."
+        </blockquote>
+        <button class="copy-pill" onclick="copyText(this, 'Let\'s bring it all together. In the last 30 minutes, you saw:\n\nLegacy DataStage jobs — converted, visual, and running in minutes. Not months.\n\nYour Risk team — building their own reports with AI. No ticket, no backlog, no code.\n\nAnd every bit of it — governed. Lineage-tracked. Auditable. Your data stays in your Snowflake, your AI is certified, and your regulator gets the traceability they require.\n\nThat\'s the platform. Migration. Productivity. Trust. All in one.')">📋 Copy Closing Script</button>
+        <div class="tagline">Migration. Productivity. Trust. All in one.</div>
+    </div>
+
+</div>
+
+<div class="footer">
+    ExBank CDO Demo &bull; Prepared by Garnie Bolling &bull; Matillion &bull; September 2026
+</div>
+
+<script>
+function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(function() {
+        var orig = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = orig;
+            btn.classList.remove('copied');
+        }, 1500);
+    });
+}
+</script>
+</body>
+</html>
