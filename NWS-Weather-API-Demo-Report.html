@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NWS Weather API — Custom Connector Demo Report</title>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e8eefb;
+            --success: #16a34a;
+            --warning: #d97706;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--dark); background: var(--light); line-height: 1.6; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 48px; }
+        .header .badge { display: inline-block; background: var(--primary); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 16px; }
+        .header h1 { font-size: 2.4rem; color: var(--dark); margin-bottom: 8px; }
+        .header .subtitle { font-size: 1.1rem; color: var(--gray); }
+        .header .meta { margin-top: 16px; font-size: 0.9rem; color: var(--gray); }
+        .header .meta span { margin: 0 12px; }
+
+        /* Cards */
+        .card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .card h2 { font-size: 1.5rem; color: var(--dark); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--primary-light); }
+        .card h3 { font-size: 1.15rem; color: var(--primary); margin: 20px 0 10px; }
+
+        /* Pipeline Flow */
+        .flow { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 24px 0; flex-wrap: wrap; }
+        .flow-step { background: var(--primary-light); border: 2px solid var(--primary); border-radius: 10px; padding: 16px 24px; text-align: center; min-width: 180px; }
+        .flow-step .icon { font-size: 1.8rem; margin-bottom: 6px; }
+        .flow-step .label { font-weight: 700; font-size: 0.95rem; color: var(--dark); }
+        .flow-step .desc { font-size: 0.8rem; color: var(--gray); margin-top: 4px; }
+        .flow-arrow { font-size: 1.6rem; color: var(--primary); font-weight: bold; }
+
+        /* Stats Row */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+        .stat-box { background: var(--primary-light); border-radius: 10px; padding: 20px; text-align: center; }
+        .stat-box .number { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .stat-box .label { font-size: 0.85rem; color: var(--gray); margin-top: 4px; }
+
+        /* Why Cards */
+        .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .why-item { background: var(--light); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
+        .why-item .num { display: inline-block; background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+        .why-item h4 { font-size: 1.05rem; margin-bottom: 8px; color: var(--dark); }
+        .why-item p { font-size: 0.9rem; color: var(--gray); }
+
+        /* Steps */
+        .steps { counter-reset: step; margin-top: 20px; }
+        .step { display: flex; gap: 16px; margin-bottom: 20px; }
+        .step::before { counter-increment: step; content: counter(step); flex-shrink: 0; width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; margin-top: 2px; }
+        .step-content h4 { font-size: 1rem; color: var(--dark); margin-bottom: 4px; }
+        .step-content p { font-size: 0.9rem; color: var(--gray); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+        thead { background: var(--dark); color: #fff; }
+        th { padding: 12px 16px; text-align: left; font-weight: 600; }
+        td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+        tbody tr:hover { background: var(--primary-light); }
+        .status-published { color: var(--success); font-weight: 600; }
+        .status-draft { color: var(--warning); font-weight: 600; }
+
+        /* Takeaways */
+        .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 20px; }
+        .takeaway { display: flex; gap: 12px; align-items: flex-start; background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+        .takeaway .icon { font-size: 1.4rem; flex-shrink: 0; }
+        .takeaway strong { display: block; font-size: 0.9rem; color: var(--dark); }
+        .takeaway span { font-size: 0.85rem; color: var(--gray); }
+
+        /* Forecast Table */
+        .forecast-table td:nth-child(2),
+        .forecast-table td:nth-child(4) { text-align: center; }
+        .temp-high { color: #dc2626; font-weight: 600; }
+        .temp-low { color: #2563eb; font-weight: 600; }
+
+        /* Footer */
+        .footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--gray); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="badge">DEMO REPORT</div>
+            <h1>🌤️ NWS Weather API</h1>
+            <p class="subtitle">Custom Connector Demo — Built with Matillion & Maia</p>
+            <p class="meta">
+                <span>📅 September 23, 2026</span>
+                <span>👤 Garnie Bolling</span>
+                <span>🏢 Salesforce — Solutions Engineering</span>
+            </p>
+        </div>
+
+        <!-- What We Built -->
+        <div class="card">
+            <h2>📋 What We Built</h2>
+            <p>A fully functional <strong>custom API connector</strong> for the <strong>National Weather Service (NWS) API</strong>, wired into a Matillion orchestration pipeline that retrieves a live 7-day weather forecast for any US location.</p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="number">1</div>
+                    <div class="label">Custom Connector</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">11</div>
+                    <div class="label">Published Endpoints</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">14</div>
+                    <div class="label">Forecast Periods</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">0</div>
+                    <div class="label">Lines of Code</div>
+                </div>
+            </div>
+
+            <h3>Pipeline Architecture</h3>
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="icon">🌐</div>
+                    <div class="label">NWS API</div>
+                    <div class="desc">api.weather.gov</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="icon">🔌</div>
+                    <div class="label">Custom Connector</div>
+                    <div class="desc">Auto-discovered endpoints</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="icon">📍</div>
+                    <div class="label">Get Grid Point</div>
+                    <div class="desc">lat/lon → grid coords</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="icon">🌦️</div>
+                    <div class="label">Get Forecast</div>
+                    <div class="desc">7-day / 14 periods</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why This Matters -->
+        <div class="card">
+            <h2>💡 Why This Matters</h2>
+            <div class="why-grid">
+                <div class="why-item">
+                    <div class="num">1</div>
+                    <h4>Rapid API Integration</h4>
+                    <p>From a public API documentation page to a fully working connector in minutes. No Python, no manual HTTP config, no authentication setup. Maia read the docs and auto-discovered 13 endpoints with full JSON schema mapping.</p>
+                </div>
+                <div class="why-item">
+                    <div class="num">2</div>
+                    <h4>Platform Extensibility</h4>
+                    <p>Matillion ships with hundreds of built-in connectors, but every organization has unique data sources. Custom Connectors bring <strong>any REST API</strong> into the same low-code experience — visual design, sampling, validation, and orchestration.</p>
+                </div>
+                <div class="why-item">
+                    <div class="num">3</div>
+                    <h4>Preview-First Workflow</h4>
+                    <p>We sampled live API data directly from the pipeline canvas — no table writes, no staging configuration, no full pipeline execution. Teams can validate data sources before committing to full ELT processes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How We Did It -->
+        <div class="card">
+            <h2>🔧 How We Did It</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-content">
+                        <h4>Identified the API</h4>
+                        <p>The NWS Weather API (<code>api.weather.gov</code>) is a free, public REST API returning JSON — a perfect fit for Custom Connectors. No API key required.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>Created the Connector</h4>
+                        <p>Maia launched the Custom Connector wizard, read the API documentation URL, and auto-discovered endpoints, parameters, headers, and JSON response structures.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>Reviewed Endpoints</h4>
+                        <p>13 endpoints were created automatically. 11 published successfully; 2 remain in draft (List Radar Queues, List Zones) due to missing structure — editable anytime in the connector workbench.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>Built the Pipeline</h4>
+                        <p>Two connector components chained together: <strong>Get Grid Point</strong> (translates coordinates to NWS grid system) → <strong>Get Forecast</strong> (retrieves the 7-day forecast).</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>Parameterized with Variables</h4>
+                        <p><code>latitude</code> and <code>longitude</code> pipeline variables make it reusable for any US location. Default set to Manhattan, NY (40.7128, -74.0060).</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>Sampled Raw Output</h4>
+                        <p>Live forecast data returned directly in the canvas — 14 periods with temperature, wind, precipitation, and detailed forecasts. Zero infrastructure needed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Endpoint Inventory -->
+        <div class="card">
+            <h2>📡 Endpoint Inventory</h2>
+            <table>
+                <thead>
+                    <tr><th>Endpoint</th><th>Status</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Get Points</td><td class="status-published">✅ Published</td><td>Converts lat/lon to NWS grid coordinates</td></tr>
+                    <tr><td>Get Gridpoint Forecast</td><td class="status-published">✅ Published</td><td>7-day forecast (14 periods)</td></tr>
+                    <tr><td>Get Gridpoint Forecast Hourly</td><td class="status-published">✅ Published</td><td>Hourly forecast data</td></tr>
+                    <tr><td>Get Gridpoint Forecast Grid Data</td><td class="status-published">✅ Published</td><td>Raw grid forecast data</td></tr>
+                    <tr><td>List Stations</td><td class="status-published">✅ Published</td><td>Weather observation stations</td></tr>
+                    <tr><td>Get Station</td><td class="status-published">✅ Published</td><td>Single station details</td></tr>
+                    <tr><td>Get Station Observation Latest</td><td class="status-published">✅ Published</td><td>Current conditions at a station</td></tr>
+                    <tr><td>List Station Observations</td><td class="status-published">✅ Published</td><td>Historical observations</td></tr>
+                    <tr><td>List Alerts / List Active Alerts</td><td class="status-published">✅ Published</td><td>Active weather alerts by area</td></tr>
+                    <tr><td>Get Zone Forecast</td><td class="status-published">✅ Published</td><td>Zone-based forecast</td></tr>
+                    <tr><td>List Gridpoint Stations</td><td class="status-published">✅ Published</td><td>Stations near a grid point</td></tr>
+                    <tr><td>List Radar Queues</td><td class="status-draft">⚠️ Draft</td><td>Missing structure — fix in workbench</td></tr>
+                    <tr><td>List Zones</td><td class="status-draft">⚠️ Draft</td><td>Missing structure — fix in workbench</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sample Forecast Data -->
+        <div class="card">
+            <h2>🌡️ Sample Forecast Data — NYC</h2>
+            <p style="color: var(--gray); margin-bottom: 16px;">Location: New York City (40.7128, -74.0060) &nbsp;|&nbsp; Retrieved: September 23, 2026</p>
+            <table class="forecast-table">
+                <thead>
+                    <tr><th>Period</th><th>Temp (°F)</th><th>Wind</th><th>Precip %</th><th>Forecast</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>This Afternoon</td><td class="temp-high">66°</td><td>21 mph NE</td><td>0%</td><td>Partly Sunny</td></tr>
+                    <tr><td>Tonight</td><td class="temp-low">56°</td><td>21 mph NE</td><td>0%</td><td>Partly Cloudy</td></tr>
+                    <tr><td>Thursday</td><td class="temp-high">66°</td><td>17-21 mph NE</td><td>0%</td><td>Mostly Sunny</td></tr>
+                    <tr><td>Thursday Night</td><td class="temp-low">57°</td><td>17-22 mph NE</td><td>6%</td><td>Mostly Cloudy</td></tr>
+                    <tr><td>Friday</td><td class="temp-high">66°</td><td>22 mph N</td><td>31%</td><td>Chance Rain Showers</td></tr>
+                    <tr><td>Friday Night</td><td class="temp-low">60°</td><td>23 mph N</td><td>40%</td><td>Chance Rain Showers</td></tr>
+                    <tr><td>Saturday</td><td class="temp-high">65°</td><td>20-23 mph N</td><td>55%</td><td>Rain Showers Likely</td></tr>
+                    <tr><td>Saturday Night</td><td class="temp-low">60°</td><td>23-28 mph N</td><td>55%</td><td>Rain Showers Likely</td></tr>
+                    <tr><td>Sunday</td><td class="temp-high">66°</td><td>17-28 mph N</td><td>52%</td><td>Chance Rain Showers</td></tr>
+                    <tr><td>Sunday Night</td><td class="temp-low">61°</td><td>18 mph N</td><td>34%</td><td>Chance Rain Showers</td></tr>
+                    <tr><td>Monday</td><td class="temp-high">68°</td><td>9-16 mph N</td><td>15%</td><td>Slight Chance Rain then Partly Sunny</td></tr>
+                    <tr><td>Monday Night</td><td class="temp-low">61°</td><td>9 mph N</td><td>6%</td><td>Partly Cloudy</td></tr>
+                    <tr><td>Tuesday</td><td class="temp-high">71°</td><td>5-8 mph NE</td><td>4%</td><td>Sunny</td></tr>
+                    <tr><td>Tuesday Night</td><td class="temp-low">64°</td><td>6 mph SW</td><td>1%</td><td>Mostly Clear</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="card">
+            <h2>🎯 Key Takeaways</h2>
+            <div class="takeaway-grid">
+                <div class="takeaway">
+                    <div class="icon">⚡</div>
+                    <div><strong>Time to Value</strong><span>API docs → working connector → live data in minutes</span></div>
+                </div>
+                <div class="takeaway">
+                    <div class="icon">🚫</div>
+                    <div><strong>No Code</strong><span>Zero Python, zero SQL, zero manual HTTP configuration</span></div>
+                </div>
+                <div class="takeaway">
+                    <div class="icon">🔐</div>
+                    <div><strong>Auth Flexibility</strong><span>Supports API keys, Bearer tokens, OAuth — same workflow</span></div>
+                </div>
+                <div class="takeaway">
+                    <div class="icon">♻️</div>
+                    <div><strong>Reusable</strong><span>Connector lives at account level — any project can use it</span></div>
+                </div>
+                <div class="takeaway">
+                    <div class="icon">🧩</div>
+                    <div><strong>Extensible</strong><span>11 endpoints ready; add more anytime in the workbench</span></div>
+                </div>
+                <div class="takeaway">
+                    <div class="icon">👁️</div>
+                    <div><strong>Preview-First</strong><span>Sample raw data before committing to table writes or runs</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Built with <strong>Matillion Maia Foundation</strong> &nbsp;|&nbsp; Custom Connector Demo &nbsp;|&nbsp; September 2026</p>
+        </div>
+
+    </div>
+</body>
+</html>
