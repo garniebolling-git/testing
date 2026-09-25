@@ -1,0 +1,370 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Maia Governance Readout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F5F4; --surface:#FFFFFF; --ink:#13202E; --muted:#51606B; --line:#D5DDDB;
+  --accent:#0F6F63; --accent-soft:#DCEEEA; --warn:#9A5B08; --warn-soft:#FBEFD9;
+  --crit:#A8281C; --crit-soft:#F9E1DE; --ok:#1E7A3C; --ok-soft:#DFF1E4; --bar:#0F6F63; --bar-2:#7FA9A2;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E1519; --surface:#152026; --ink:#E4ECEA; --muted:#98A8AE; --line:#2A3940;
+    --accent:#5CC4B2; --accent-soft:#16342F; --warn:#E6AE55; --warn-soft:#3A2B12;
+    --crit:#F08A7E; --crit-soft:#3E1C18; --ok:#7BD095; --ok-soft:#173222; --bar:#5CC4B2; --bar-2:#3C6E66;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E1519; --surface:#152026; --ink:#E4ECEA; --muted:#98A8AE; --line:#2A3940;
+  --accent:#5CC4B2; --accent-soft:#16342F; --warn:#E6AE55; --warn-soft:#3A2B12;
+  --crit:#F08A7E; --crit-soft:#3E1C18; --ok:#7BD095; --ok-soft:#173222; --bar:#5CC4B2; --bar-2:#3C6E66;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.6;padding:0 20px;}
+.wrap{max-width:980px;margin:0 auto;padding-block:48px 72px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(34px,5.5vw,52px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:28px;font-weight:600}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-size:13px}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:3px;word-break:break-word}
+header{display:flex;flex-direction:column;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:28px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 28px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:500}
+section{display:flex;flex-direction:column;gap:20px}
+.sec-head{display:flex;flex-direction:column;gap:8px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.kpi{background:var(--surface);padding:18px 18px 16px;display:flex;flex-direction:column;gap:4px}
+.kpi .n{font-family:var(--display);font-size:36px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+.kpi .l{font-size:13px;color:var(--muted);line-height:1.4}
+.panel{background:var(--surface);border:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(150px,230px) 1fr 64px;gap:12px;align-items:center;font-size:13.5px}
+.bar .k{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere}
+.bar .t{height:12px;background:var(--accent-soft);position:relative}
+.bar .t i{position:absolute;inset:0 auto 0 0;background:var(--bar)}
+.bar .t i.alt{background:var(--bar-2)}
+.bar .v{font-family:var(--mono);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:2px;font-weight:500;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.info{background:var(--accent-soft);color:var(--accent)}
+.callout{border-left:4px solid var(--warn);background:var(--warn-soft);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.callout.good{border-left-color:var(--ok);background:var(--ok-soft)}
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--bg)}
+tr:last-child td{border-bottom:none}
+td.num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.flow{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:16px}
+.flow svg{display:block;min-width:760px;width:100%;height:auto}
+.flow text{font-family:var(--mono);font-size:12px;fill:var(--ink)}
+.flow .job{font-size:10.5px;fill:var(--muted);paint-order:stroke;stroke:var(--surface);stroke-width:5px;stroke-linejoin:round}
+.flow .src{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.flow .tgt{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.flow .edge{stroke:var(--accent);stroke-width:1.5;fill:none}
+.flow .edge.anom{stroke:var(--warn);stroke-dasharray:5 4}
+.timeline{display:flex;flex-direction:column;border-left:2px solid var(--line);margin-left:6px}
+.ev{position:relative;padding:0 0 18px 22px;display:flex;flex-direction:column;gap:2px}
+.ev:last-child{padding-bottom:0}
+.ev::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--accent)}
+.ev.fail::before{border-color:var(--crit);background:var(--crit-soft)}
+.ev.pass::before{border-color:var(--ok);background:var(--ok-soft)}
+.ev .ts{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.gaps{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gap{background:var(--surface);border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:8px}
+.gap .q{font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.gap .q b{color:var(--ink);font-weight:600}
+.arch{display:flex;flex-wrap:wrap;align-items:stretch;gap:0}
+.node{flex:1 1 160px;background:var(--surface);border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.node b{font-family:var(--display);font-size:16px}
+.arrow{display:flex;align-items:center;padding:0 8px;color:var(--accent);font-family:var(--mono)}
+footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+@media (max-width:760px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .two,.gaps{grid-template-columns:1fr}
+  .bar{grid-template-columns:1fr 52px;}
+  .bar .k{grid-column:1 / -1}
+  .arrow{transform:rotate(90deg);padding:4px 0;flex-basis:100%;justify-content:center}
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Governance evidence readout</span>
+  <h1>Maia Governance Readout</h1>
+  <p class="muted">What the Matillion Data Productivity Cloud records about people, AI agents, data movement and cost, pulled live through the Matillion MCP server from a demo account running the ExBank banking scenario.</p>
+  <div class="meta">
+    <span>Window <b>2026-09-01 to 2026-09-24</b></span>
+    <span>Region <b>US</b></span>
+    <span>Project <b>My first project</b></span>
+    <span>Access <b>Read-only API</b></span>
+    <span>Prepared by <b>Garnie Bolling</b></span>
+  </div>
+</header>
+
+<section aria-label="Summary">
+  <div class="kpis">
+    <div class="kpi"><span class="n">207</span><span class="l">audit events, each tied to a user, timestamp and project</span></div>
+    <div class="kpi"><span class="n">63</span><span class="l">Maia actions approved by a person, one at a time</span></div>
+    <div class="kpi"><span class="n">45</span><span class="l">OpenLineage events across 12 Snowflake tables</span></div>
+    <div class="kpi"><span class="n">0.0417</span><span class="l">credits consumed, attributed to 12 pipelines</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">How the evidence was gathered</span>
+    <h2>An AI assistant querying the platform's own control plane</h2>
+    <p>No screenshots or exports. Every figure below came from the Matillion Public API, called through the open-source Matillion MCP server in read-only mode. A governance team would use the same path for continuous evidence collection.</p>
+  </div>
+  <div class="arch">
+    <div class="node"><b>Claude</b><span class="muted">Asks questions in plain English</span></div>
+    <div class="arrow">&rarr;</div>
+    <div class="node"><b>Matillion MCP server</b><span class="mono">@matillion/mcp-server 1.20.6</span><span class="muted">31 read-only tools</span></div>
+    <div class="arrow">&rarr;</div>
+    <div class="node"><b>DPC Public API</b><span class="muted">OAuth client credentials, 30 minute tokens</span></div>
+    <div class="arrow">&rarr;</div>
+    <div class="node"><b>Evidence</b><span class="muted">Audit, lineage, consumption, runs, runners, artifacts</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">01 &middot; Accountability</span>
+    <h2>Audit trail</h2>
+    <p>The platform logged 207 events between 2026-09-16 and 2026-09-24. Each record carries the event type, user identity, subject, source service and project ID. 206 of 207 events name a user.</p>
+  </div>
+  <div class="panel">
+    <h3>Events by type</h3>
+    <div class="bars">
+      <div class="bar"><span class="k">maia.prompt.submitted</span><span class="t"><i style="width:100%"></i></span><span class="v">113</span></div>
+      <div class="bar"><span class="k">maia.permission.tool.accepted</span><span class="t"><i style="width:55.8%"></i></span><span class="v">63</span></div>
+      <div class="bar"><span class="k">maia.task.started</span><span class="t"><i style="width:16.8%"></i></span><span class="v">19</span></div>
+      <div class="bar"><span class="k">credentials.created</span><span class="t"><i class="alt" style="width:2.7%"></i></span><span class="v">3</span></div>
+      <div class="bar"><span class="k">project.created</span><span class="t"><i class="alt" style="width:1.8%"></i></span><span class="v">2</span></div>
+      <div class="bar"><span class="k">project.user.added</span><span class="t"><i class="alt" style="width:1.8%"></i></span><span class="v">2</span></div>
+      <div class="bar"><span class="k">project.removed</span><span class="t"><i class="alt" style="width:.9%"></i></span><span class="v">1</span></div>
+      <div class="bar"><span class="k">environment.created</span><span class="t"><i class="alt" style="width:.9%"></i></span><span class="v">1</span></div>
+      <div class="bar"><span class="k">artifact.created</span><span class="t"><i class="alt" style="width:.9%"></i></span><span class="v">1</span></div>
+      <div class="bar"><span class="k">customconnector.created</span><span class="t"><i class="alt" style="width:.9%"></i></span><span class="v">1</span></div>
+      <div class="bar"><span class="k">maia.task.permission.tool.set</span><span class="t"><i class="alt" style="width:.9%"></i></span><span class="v">1</span></div>
+    </div>
+    <p class="muted" style="font-size:13px">Dark bars: AI agent activity. Light bars: platform configuration changes. The single event with no user attached is <code>customconnector.created</code> on 2026-09-23 at 19:49 UTC.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">02 &middot; AI oversight</span>
+    <h2>Every Maia action is logged, and people approve each one</h2>
+    <p>This section speaks to the CDO's concern about AI acting on bank data without supervision. Maia ran 19 tasks: 13 by the data engineer agent and 6 by the graph visualisation agent. Before Maia touched the warehouse, ran a pipeline or deleted a file, a person approved that single action, and the approval landed in the audit log with the tool name and conversation ID.</p>
+  </div>
+  <div class="two">
+    <div class="panel">
+      <h3>Approved Maia actions by tool</h3>
+      <div class="bars">
+        <div class="bar"><span class="k">query_warehouse</span><span class="t"><i style="width:100%"></i></span><span class="v">32</span></div>
+        <div class="bar"><span class="k">sample_component</span><span class="t"><i style="width:28.1%"></i></span><span class="v">9</span></div>
+        <div class="bar"><span class="k">run_pipeline</span><span class="t"><i style="width:21.9%"></i></span><span class="v">7</span></div>
+        <div class="bar"><span class="k">enter_plan_mode</span><span class="t"><i style="width:15.6%"></i></span><span class="v">5</span></div>
+        <div class="bar"><span class="k">exit_plan_mode</span><span class="t"><i style="width:15.6%"></i></span><span class="v">5</span></div>
+        <div class="bar"><span class="k">rename_file</span><span class="t"><i style="width:6.3%"></i></span><span class="v">2</span></div>
+        <div class="bar"><span class="k">delete_file</span><span class="t"><i style="width:3.1%"></i></span><span class="v">1</span></div>
+        <div class="bar"><span class="k">create_custom_connector</span><span class="t"><i style="width:3.1%"></i></span><span class="v">1</span></div>
+        <div class="bar"><span class="k">ask_user_question</span><span class="t"><i style="width:3.1%"></i></span><span class="v">1</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="callout good">
+        <h3>63 of 63 approvals were single-action</h3>
+        <p style="font-size:14px">No approval granted Maia standing permission for the rest of a session. Each warehouse query and each pipeline run needed its own sign-off.</p>
+      </div>
+      <div class="callout">
+        <h3>Approval bypass is visible</h3>
+        <p style="font-size:14px">The permission preset <code>DANGEROUSLY_SKIP_APPROVALS</code> appeared twice in test work on 2026-09-18: once at task start (18:26 UTC) and once as a mid-task change (23:19 UTC). Both are in the log. A bank would alert on this event type and restrict the preset by role.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">03 &middot; Data movement</span>
+    <h2>Lineage in an open standard</h2>
+    <p>The platform emitted 45 lineage events in OpenLineage format, covering 12 pipelines and 12 Snowflake tables. Because the format is open, an enterprise catalog such as Alation, Collibra or Informatica CDGC can ingest these events without custom code.</p>
+  </div>
+  <div class="flow">
+    <svg viewBox="0 0 900 400" role="img" aria-label="Table-level lineage from source tables through transformation pipelines to output tables">
+      <text x="10" y="18" class="job">SOURCE TABLES</text>
+      <text x="640" y="18" class="job">OUTPUT TABLES</text>
+      <!-- sources -->
+      <rect class="src" x="10" y="34" width="230" height="30"/><text x="20" y="54">EXBANK_OPERATIONS</text>
+      <rect class="src" x="10" y="80" width="230" height="30"/><text x="20" y="100">EXBANK_BUSINESS_UNITS</text>
+      <rect class="src" x="10" y="126" width="230" height="30"/><text x="20" y="146">EXBANK_CASE_TYPES</text>
+      <rect class="src" x="10" y="196" width="230" height="30"/><text x="20" y="216">TEAM</text>
+      <rect class="src" x="10" y="242" width="230" height="30"/><text x="20" y="262">ENGINEERING_METRICS</text>
+      <rect class="src" x="10" y="300" width="230" height="30"/><text x="20" y="320">ENGINEERING_METRICS_STREAM</text>
+      <rect class="src" x="10" y="352" width="230" height="30"/><text x="20" y="372">WITH_TRENDS</text>
+      <!-- targets -->
+      <rect class="tgt" x="640" y="57" width="250" height="30"/><text x="650" y="77">EXBANK_DAILY_SUMMARY</text>
+      <rect class="tgt" x="640" y="126" width="250" height="30"/><text x="650" y="146">EXBANK_ESCALATION_TRENDS</text>
+      <rect class="tgt" x="640" y="219" width="250" height="30"/><text x="650" y="239">TEAM_DASHBOARD</text>
+      <rect class="tgt" x="640" y="300" width="250" height="30"/><text x="650" y="320">ENGINEERING_METRICS_TARGET</text>
+      <rect class="tgt" x="640" y="352" width="250" height="30"/><text x="650" y="372">TEAM_TRENDS</text>
+      <!-- t1 daily metrics -->
+      <path class="edge" d="M240 49 C 440 49, 440 72, 640 72"/>
+      <path class="edge" d="M240 95 C 440 95, 440 72, 640 72"/>
+      <text x="360" y="44" class="job">t1-exbank-daily-metrics</text>
+      <!-- t2 escalation -->
+      <path class="edge" d="M240 49 C 440 49, 440 141, 640 141"/>
+      <path class="edge" d="M240 95 C 440 95, 440 141, 640 141"/>
+      <path class="edge" d="M240 141 L 640 141"/>
+      <text x="330" y="128" class="job">t2-exbank-escalation-trends</text>
+      <!-- team dashboard -->
+      <path class="edge" d="M240 211 C 440 211, 440 234, 640 234"/>
+      <path class="edge" d="M240 257 C 440 257, 440 234, 640 234"/>
+      <text x="360" y="228" class="job">build-team-dashboard</text>
+      <!-- anomaly -->
+      <path class="edge anom" d="M240 211 C 460 190, 440 80, 640 76"/>
+      <path class="edge anom" d="M240 257 C 470 230, 440 84, 640 80"/>
+      <!-- cdc -->
+      <path class="edge" d="M240 315 L 640 315"/>
+      <text x="360" y="309" class="job">merge-cdc-changes</text>
+      <!-- trends -->
+      <path class="edge" d="M240 367 L 640 367"/>
+      <text x="360" y="361" class="job">custom-sql-analysis</text>
+    </svg>
+  </div>
+  <p class="muted" style="font-size:13px">Dashed amber lines: lineage also records TEAM and ENGINEERING_METRICS feeding EXBANK_DAILY_SUMMARY from an earlier version of t1-exbank-daily-metrics. The lineage log keeps history, so a catalog would show both versions until one is retired.</p>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Output table</th><th>Columns with column-level lineage</th><th>Built by</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">TEAM_TRENDS</td><td class="num">8</td><td class="mono">custom-sql-analysis</td></tr>
+        <tr><td class="mono">TEAM_DASHBOARD</td><td class="num">8</td><td class="mono">build-team-dashboard</td></tr>
+        <tr><td class="mono">EXBANK_ESCALATION_TRENDS</td><td class="num">7</td><td class="mono">t2-exbank-escalation-trends</td></tr>
+        <tr><td class="mono">ENGINEERING_METRICS_TARGET</td><td class="num">7</td><td class="mono">merge-cdc-changes</td></tr>
+        <tr><td class="mono">EXBANK_DAILY_SUMMARY</td><td class="num">6</td><td class="mono">t1-exbank-daily-metrics</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:13px">21 lineage records also carry schema facets (column names and data types). Ownership and documentation facets are empty on all 45 events.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">04 &middot; Operational resilience</span>
+    <h2>Incident trail: failure, cause, fix, proof</h2>
+    <p>The run history and lineage log together reconstruct a failed change-data-capture load and its recovery in under a minute, with the exact error text preserved.</p>
+  </div>
+  <div class="panel">
+    <div class="timeline">
+      <div class="ev fail"><span class="ts">2026-09-18 19:29:27 UTC</span><span><b>setup-cdc.orch.yaml</b> <span class="pill crit">Failed</span></span><span class="muted" style="font-size:14px">Error: <code>Invalid DPL for parameter [filterConditions]: filterConditions.value field is required but not present</code></span></div>
+      <div class="ev fail"><span class="ts">2026-09-18 19:29 UTC</span><span><b>merge-cdc-changes.tran.yaml</b> <span class="pill crit">Fail event</span></span><span class="muted" style="font-size:14px">Lineage records the downstream transformation failing in the same run.</span></div>
+      <div class="ev pass"><span class="ts">2026-09-18 19:30:11 UTC</span><span><b>setup-cdc.orch.yaml</b> <span class="pill ok">Success</span></span><span class="muted" style="font-size:14px">Rerun starts 44 seconds after the failed run started. Final step "Merge Upserts" succeeds.</span></div>
+    </div>
+  </div>
+  <p class="muted" style="font-size:13px">Run totals for the window: 11 pipeline runs, 10 succeeded, 1 failed.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">05 &middot; Cost control</span>
+    <h2>Credits attributed to each pipeline</h2>
+    <p>Consumption is reported by day, pipeline, project and environment, which supports chargeback to bank business units. Total for the window: 0.0417 credits (transformation 0.0267, orchestration 0.0150), spent on 2026-09-18 (0.0339) and 2026-09-23 (0.0078).</p>
+  </div>
+  <div class="panel">
+    <div class="bars">
+      <div class="bar"><span class="k">t1-exbank-daily-metrics</span><span class="t"><i style="width:100%"></i></span><span class="v">0.00834</span></div>
+      <div class="bar"><span class="k">t2-exbank-escalation-trends</span><span class="t"><i style="width:80.1%"></i></span><span class="v">0.00668</span></div>
+      <div class="bar"><span class="k">merge-cdc-changes</span><span class="t"><i style="width:60.1%"></i></span><span class="v">0.00501</span></div>
+      <div class="bar"><span class="k">setup-cdc</span><span class="t"><i class="alt" style="width:46.6%"></i></span><span class="v">0.00389</span></div>
+      <div class="bar"><span class="k">create-maia-demo-data</span><span class="t"><i class="alt" style="width:46.6%"></i></span><span class="v">0.00389</span></div>
+      <div class="bar"><span class="k">build-team-dashboard</span><span class="t"><i style="width:40.0%"></i></span><span class="v">0.00334</span></div>
+      <div class="bar"><span class="k">run-elt-pipeline</span><span class="t"><i class="alt" style="width:39.9%"></i></span><span class="v">0.00333</span></div>
+      <div class="bar"><span class="k">custom-sql-analysis</span><span class="t"><i style="width:20.0%"></i></span><span class="v">0.00167</span></div>
+      <div class="bar"><span class="k">team-efficiency-analysis</span><span class="t"><i style="width:20.0%"></i></span><span class="v">0.00167</span></div>
+      <div class="bar"><span class="k">t1-demo-data-setup</span><span class="t"><i class="alt" style="width:20.0%"></i></span><span class="v">0.00167</span></div>
+      <div class="bar"><span class="k">t1-exbank-daily-etl</span><span class="t"><i class="alt" style="width:13.3%"></i></span><span class="v">0.00111</span></div>
+      <div class="bar"><span class="k">t2-exbank-escalation-etl</span><span class="t"><i class="alt" style="width:13.3%"></i></span><span class="v">0.00111</span></div>
+    </div>
+    <p class="muted" style="font-size:13px">Dark bars: transformation pipelines. Light bars: orchestration pipelines. Credits per ETL user for the window: 0.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">06 &middot; Change management and runtime</span>
+    <h2>Every deployed version traces to a commit</h2>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Control</th><th>Evidence</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Published artifact</td><td>Version <span class="mono">918-2pm</span>, branch <span class="mono">Test</span>, commit <span class="mono">c22f178</span>, deployed 2026-09-18 19:01 UTC</td><td><span class="pill ok">Traceable</span></td></tr>
+        <tr><td>Artifact contents</td><td>1 pipeline plus Maia rules and context files (<span class="mono">.matillion/maia/rules/context.md</span>, <span class="mono">cust_ref.md</span>) versioned with the code</td><td><span class="pill ok">Versioned</span></td></tr>
+        <tr><td>Runner version</td><td>Maia Hosted Runner, version 12.135.0, release track "current", released 2026-09-24, no update pending</td><td><span class="pill ok">Current</span></td></tr>
+        <tr><td>Runner hosting</td><td>Kubernetes hosted by Matillion. No customer-hosted runner in this account.</td><td><span class="pill warn">Demo only</span></td></tr>
+        <tr><td>Schedules</td><td>0 schedules configured</td><td><span class="pill info">None</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="eyebrow">07 &middot; Gaps and discovery questions</span>
+    <h2>What a bank adds around the platform</h2>
+    <p>The API does not cover every control a bank's second line of defense expects. Each gap below pairs the observation with the question to ask the customer.</p>
+  </div>
+  <div class="gaps">
+    <div class="gap">
+      <span><span class="pill warn">Secrets</span></span>
+      <h3>Secrets inventory does not match the audit log</h3>
+      <p style="font-size:14px">The audit log shows 3 warehouse credentials created. The secret reference list returns 0.</p>
+      <p class="q"><b>Ask:</b> Which vault holds your pipeline credentials today, and does audit need a single inventory across tools?</p>
+    </div>
+    <div class="gap">
+      <span><span class="pill warn">Classification</span></span>
+      <h3>No sensitivity labels, owners or quality scores</h3>
+      <p style="font-size:14px">Lineage ownership and documentation facets are empty. No PII tags or data quality results appear in any response.</p>
+      <p class="q"><b>Ask:</b> Where do data classifications and stewards live today, and should lineage flow into that catalog?</p>
+    </div>
+    <div class="gap">
+      <span><span class="pill warn">Access</span></span>
+      <h3>Project membership, not data entitlements</h3>
+      <p style="font-size:14px">The audit log records users added to projects. The API does not report who holds read access to which table.</p>
+      <p class="q"><b>Ask:</b> Are table entitlements managed in Snowflake roles, and who certifies them each quarter?</p>
+    </div>
+    <div class="gap">
+      <span><span class="pill crit">Hosting</span></span>
+      <h3>Customer-hosted execution not shown</h3>
+      <p style="font-size:14px">This account runs on a Matillion-hosted runner. A bank deployment keeps the runner and data plane inside the bank's own cloud account.</p>
+      <p class="q"><b>Ask:</b> Which cloud and region must the runner live in, and what are the network egress rules?</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span><b>Method.</b> Data retrieved on 2026-09-24 with <span class="mono">@matillion/mcp-server</span> 1.20.6, read-only mode, US region, tools: get-audit-events, get-lineage-events, get-consumption, get-consumption-etl-users, list-pipeline-executions, get-agent-details, get-artifact-details-v2, list-project-secret-references.</span>
+  <span><b>Scope.</b> Demo trial account with a single user. Snowflake account and database identifiers omitted. Volumes reflect test activity, not production load.</span>
+</footer>
+
+</div>
+
+</body></html>
